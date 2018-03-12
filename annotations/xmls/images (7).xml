@@ -1,0 +1,38 @@
+<annotation>
+	<folder>label_image</folder>
+	<filename>images (7).jpg</filename>
+	<path>/home/irerenu/Documents/TF/realtime_object_detection/label_image/images (7).jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>224</width>
+		<height>224</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>buoy</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>4</xmin>
+			<ymin>99</ymin>
+			<xmax>30</xmax>
+			<ymax>125</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>buoy</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>173</xmin>
+			<ymin>86</ymin>
+			<xmax>181</xmax>
+			<ymax>93</ymax>
+		</bndbox>
+	</object>
+</annotation>

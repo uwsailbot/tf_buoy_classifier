@@ -1,0 +1,26 @@
+<annotation>
+	<folder>label_image</folder>
+	<filename>red-buoy-1457116991Qg8.jpg</filename>
+	<path>/home/irerenu/Documents/TF/realtime_object_detection/label_image/red-buoy-1457116991Qg8.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>224</width>
+		<height>224</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>buoy</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>63</xmin>
+			<ymin>104</ymin>
+			<xmax>85</xmax>
+			<ymax>125</ymax>
+		</bndbox>
+	</object>
+</annotation>

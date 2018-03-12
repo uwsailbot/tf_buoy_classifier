@@ -1,0 +1,26 @@
+<annotation>
+	<folder>pictures</folder>
+	<filename>344.jpg</filename>
+	<path>/home/wkmiao/Documents/Workspace/labelImg/pictures/344.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>265</width>
+		<height>190</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>buoy</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>79</xmin>
+			<ymin>100</ymin>
+			<xmax>130</xmax>
+			<ymax>139</ymax>
+		</bndbox>
+	</object>
+</annotation>
