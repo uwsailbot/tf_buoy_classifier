@@ -40,6 +40,13 @@ export PYTHONPATH=$PYTHONPATH:`pwd`:`pwd`/slim
 
 
 ## Usage
+If running for the first time, run:
+
+```bash
+python setup.py build
+python setup.py install
+```
+
 Run:
 
 ```bash
