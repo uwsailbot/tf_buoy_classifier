@@ -1,5 +1,3 @@
-<img src=screenshots/starwars_small.gif width=100% />
-
 # Buoy Object Detection with TensorFlow's Mobilenet model
 Object detection allows for the recognition, detection, and localization of multiple buoys within an image. 
 
@@ -50,4 +48,4 @@ python object_detection/object_detection_runner.py
 
 ## Source
 
-[MIT](LICENSE)
+[MIT LICENSE](LICENSE)
