@@ -24,9 +24,7 @@ Start the docker with: (change to appropriate paths)
 
 ```bash
 xhost +
-```
 
-```bash
 sudo docker run -it --privileged -p 8888:8888 --env DISPLAY=$DISPLAY -v /dev/video0:/dev/video0 --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" -v /home/path/to/cloned/repo/:/home/TF dockerimagename:latest
 ```
 
@@ -43,16 +41,19 @@ export PYTHONPATH=$PYTHONPATH:`pwd`:`pwd`/slim
 If running for the first time, run:
 
 ```bash
-python setup.py build
-python setup.py install
+python3 setup.py build
+python3 setup.py install
 ```
 
 Run:
 
 ```bash
-python object_detection/object_detection_runner.py
+python3 object_detection/object_detection_runner.py
 ```
 
-## Source
+## Based of
 
 [MIT LICENSE](LICENSE)
+
+
+[Realtime-Object-Detection](https://github.com/GustavZ/realtime_object_detection)

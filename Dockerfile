@@ -7,6 +7,7 @@ ENV NUM_CORES 2
 
 RUN apt-get -y update -qq && \
     apt-get -y install wget \
+                       apt-utils \
                        unzip \
 
                        # Required
