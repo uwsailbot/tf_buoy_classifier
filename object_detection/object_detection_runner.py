@@ -21,7 +21,7 @@ from multiprocessing.dummy import Pool as ThreadPool
 
 
 
-##############more##############
+############## more ##############
 import yaml
 import cv2
 from stuff.helper import FPS2, WebcamVideoStream
@@ -48,50 +48,39 @@ PATH_TO_CKPT = MODEL_NAME + '/frozen_inference_graph.pb'
 # with open("config.yml", 'r') as ymlfile:
 #     cfg = yaml.load(ymlfile)
 
-# video_input         = cfg['video_input']
-# visualize           = cfg['visualize']
-# vis_text            = cfg['vis_text']
-# max_frames          = cfg['max_frames']
-# width               = cfg['width']
+# video_input         = cfg['video_input']          # Input Must be OpenCV readable 
+# visualize           = cfg['visualize']            # Disable for performance increase
+# vis_text            = cfg['vis_text']             # Display fps on visualization stream
+# max_frames          = cfg['max_frames']           # only used if visualize==False
+# width               = cfg['width']                # 300x300 is used by SSD_Mobilenet -> highest fps
 # height              = cfg['height']
-# fps_interval        = cfg['fps_interval']
-# allow_memory_growth = cfg['allow_memory_growth']
-# det_interval        = cfg['det_interval']
-# det_th              = cfg['det_th']
+# fps_interval        = cfg['fps_interval']         # Intervall [s] to print fps in console
+# allow_memory_growth = cfg['allow_memory_growth']  # limits memory allocation to the actual needs
+# det_interval        = cfg['det_interval']         # intervall [frames] to print detections to console
+# det_th              = cfg['det_th']               # detection threshold for det_intervall
 # model_name          = cfg['model_name']
 # model_path          = cfg['model_path']
 # label_path          = cfg['label_path']
 # num_classes         = cfg['num_classes']
-# # split_model         = cfg['split_model']
-# log_device          = cfg['log_device']
-# #ssd_shape           = cfg['ssd_shape']
+# split_model         = cfg['split_model']          # Splits Model into a GPU and CPU session (currently only works for ssd_mobilenets)
+# log_device          = cfg['log_device']           # Logs GPU / CPU device placement
+# ssd_shape           = cfg['ssd_shape']
 
-video_input =  0              # Input Must be OpenCV readable 
+###### Manual loading cause we don't have a config file yet :| ########
+model_name = 'ssd_mobilenet_v1_coco'
+video_input = 0              # Input Must be OpenCV readable 
 visualize = True             # Disable for performance increase
-vis_text = True              # Display fps on visualization stream
 max_frames = 500             # only used if visualize==False
 width = 300                  # 300x300 is used by SSD_Mobilenet -> highest fps
 height = 300
 fps_interval = 3             # Intervall [s] to print fps in console
-det_interval = 75            # intervall [frames] to print detections to console
+bbox_thickness = 8           # thickness of bounding boxes printed to the output image
+allow_memory_growth = True   # restart python to apply changes on memory usage
+det_intervall = 75           # intervall [frames] to print detections to console
 det_th = 0.5                 # detection threshold for det_intervall
-split_model = False           # Splits Model into a GPU and CPU session (currently only works for ssd_mobilenets)
-log_device = False            # Logs GPU / CPU device placement
-allow_memory_growth = True   # limits memory allocation to the actual needs
 
+#####################################################
 
-model_name = 'ssd_mobilenet_v1_coco'
-model_path = 'output_inference_graph/frozen_inference_graph.pb'
-label_path = 'annotations/label_map.pbtxt'
-num_classes = 1
-#######################################################
-
-
-#do not need
-def load_image_into_numpy_array(image):
-    (im_width, im_height) = image.size
-    return np.array(image.getdata()).reshape(
-        (im_height, im_width, 3)).astype(np.uint8)
 
 def detect_objects(image_path):
     image = Image.open(image_path)
@@ -118,10 +107,6 @@ def detect_objects(image_path):
     plt.imshow(image_np, aspect = 'auto')
     plt.savefig('output/{}'.format(image_path), dpi = 62)
     plt.close(fig)
-
-
-def length_of_bounding_box(bbox):
-    print(bbox[0][3]*IMG_WIDTH - bbox[0][1]*IMG_WIDTH)
 
 def object_detection(video_input,visualize,max_frames,width,height,fps_interval,bbox_thickness, \
                      allow_memory_growth,det_intervall,det_th,model_name):
@@ -155,18 +140,31 @@ def object_detection(video_input,visualize,max_frames,width,height,fps_interval,
                 if visualize:
                     # Visualization of the results of a detection.
                     vis_util.visualize_boxes_and_labels_on_image_array(
-                    image_np,
-                    np.squeeze(boxes),
-                    np.squeeze(classes).astype(np.int32),
-                    np.squeeze(scores),
-                    CATEGORY_INDEX,
-                    min_score_thresh=MINIMUM_CONFIDENCE,
-                    use_normalized_coordinates=True,
-                    line_thickness=bbox_thickness)
+                        image_np,
+                        np.squeeze(boxes),
+                        np.squeeze(classes).astype(np.int32),
+                        np.squeeze(scores),
+                        CATEGORY_INDEX,
+                        min_score_thresh=MINIMUM_CONFIDENCE,
+                        use_normalized_coordinates=True,
+                        line_thickness=bbox_thickness)
                     cv2.imshow('object_detection', image_np)
-                    
-                    # length_of_bounding_box(boxes)
+                    # print(boxes)
+                    # print bounding corners of boxes when confidence is > minimum confidence (the ones you're drawing boxes around)
+                    print("NEW FRAME")
+                    for i, box in enumerate(np.squeeze(boxes)):
+                        if(np.squeeze(scores)[i] > MINIMUM_CONFIDENCE):
+                            # This uses actual coordinates based on size of image - remove height and width to use normalized coordinates
+                            ymin = box[0]*height
+                            xmin = box[1]*width
+                            ymax = box[2]*height
+                            xmax = box[3]*width
+                            print ('Top left')
+                            print ("(" + str(xmin) + "," + str(ymin) + ")")
+                            print ('Bottom right')
+                            print ("(" + str(xmax) + "," + str(ymax) + ")")
 
+                    print()
                     # Exit Option--BROKEN
                     if cv2.waitKey(1) & 0xFF == ord('q'):
                         break
@@ -188,24 +186,6 @@ def object_detection(video_input,visualize,max_frames,width,height,fps_interval,
     print('[INFO] elapsed time (total): {:.2f}'.format(fps.elapsed()))
     print('[INFO] approx. FPS: {:.2f}'.format(fps.fps()))
 
-   
-
-        
-    # fig = plt.figure()
-    # fig.set_size_inches(16, 9)
-    # ax = plt.Axes(fig, [0., 0., 1., 1.])
-    # ax.set_axis_off()
-    # fig.add_axes(ax)
-
-    # plt.imshow(image_np, aspect = 'auto')
-    # plt.savefig('output/{}'.format(image_path), dpi = 62)
-    # plt.close(fig)
-
-
-
-
-# TEST_IMAGE_PATHS = [ os.path.join(PATH_TO_TEST_IMAGES_DIR, 'image-{}.jpg'.format(i)) for i in range(1, 4) ]
-TEST_IMAGE_PATHS = glob.glob(os.path.join(PATH_TO_TEST_IMAGES_DIR, '*.jpg'))
 
 # Load model into memory
 print('Loading model...')
@@ -224,24 +204,6 @@ with detection_graph.as_default():
         detection_boxes = detection_graph.get_tensor_by_name('detection_boxes:0')
         detection_scores = detection_graph.get_tensor_by_name('detection_scores:0')
         detection_classes = detection_graph.get_tensor_by_name('detection_classes:0')
-        num_detections = detection_graph.get_tensor_by_name('num_detections:0')
-
-
-        # for image_path in TEST_IMAGE_PATHS:
-        #     detect_objects(image_path)
-
-
-    model_name = 'ssd_mobilenet_v1_coco'
-    video_input = 0              # Input Must be OpenCV readable 
-    visualize = True             # Disable for performance increase
-    max_frames = 500             # only used if visualize==False
-    width = 300                  # 300x300 is used by SSD_Mobilenet -> highest fps
-    height = 300
-    fps_interval = 3             # Intervall [s] to print fps in console
-    bbox_thickness = 8           # thickness of bounding boxes printed to the output image
-    allow_memory_growth = True   # restart python to apply changes on memory usage
-    det_intervall = 75           # intervall [frames] to print detections to console
-    det_th = 0.5                 # detection threshold for det_intervall
-    
+        num_detections = detection_graph.get_tensor_by_name('num_detections:0')    
 
     object_detection(video_input, visualize, max_frames, width, height, fps_interval, bbox_thickness, allow_memory_growth, det_intervall, det_th, model_name)
