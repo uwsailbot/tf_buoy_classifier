@@ -1,54 +1,66 @@
 # Buoy Object Detection with TensorFlow's Mobilenet model
-Object detection allows for the recognition, detection, and localization of multiple buoys within an image. 
+Object detection allows for the recognition, detection, and localization of multiple buoys within an image using a live video feed 
 
 ## Installation
 
-Download Docker and run the dockerfile to install all the dependencies. Folder structure should be like this:
+### Download and Install Docker
+```bash
+sudo apt-get update
+sudo apt-get install \
+    apt-transport-https \
+    ca-certificates \
+    curl \
+    software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo add-apt-repository \
+   "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+   $(lsb_release -cs) \
+   stable"
+sudo apt-get update
+sudo apt-get install docker-ce
+sudo groupadd docker
+sudo usermod -aG docker $USER
+```
+
+### Build the Dockerfile to install all dependencies
+>_**Note:** If the following docker commands do not work, run it with `sudo` (or log out and log back in)._
+
+**Note:** This must be run in the root folder of this repository  
+**Alternatively:** Replace `.` with `/path/to/Dockerfile`
+```bash
+docker build -t  tf-buoy-classifier .
+```
+
+Verify that the image has been successfully built using
 
 ```bash
-dockerimagename/Dockerfile
-```
-Run inside the dockerimagename folder. 
+$ docker images
 
-```bash
-sudo docker build -t  dockerimagename . 
-```
-
-Check if the docker image has been build successfully with 
-
-```bash
-sudo docker image ls
+REPOSITORY              TAG                 IMAGE ID            CREATED             SIZE
+tf-buoy-classifier      latest              272ef1a20710        10 seconds ago      2.54GB
+tensorflow/tensorflow   1.4.0-py3           7d680bfcec87        4 months ago        1.25GB
 ```
 
-Start the docker with: (change to appropriate paths)
+Make sure you are in the root directory of this repository and start the docker container with:
 
 ```bash
 xhost +
-
-sudo docker run -it --privileged -p 8888:8888 --env DISPLAY=$DISPLAY -v /dev/video0:/dev/video0 --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" -v /home/path/to/cloned/repo/:/home/TF dockerimagename:latest
+docker run -it --rm --privileged -p 8888:8888 --env DISPLAY=$DISPLAY -v /dev/video0:/dev/video0 --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" -v $(pwd):/home/TF tf-buoy-classifier:latest
 ```
-
-Inside the docker, add `models` and `models/slim` to your `PYTHONPATH` using:
-
-```bash
-export PYTHONPATH=$PYTHONPATH:`pwd`:`pwd`/slim
-```
-
->_**Note:** This last command must be ran every time you open terminal, or added to your `~/.bashrc` file._
-
 
 ## Usage
+>_The following must be run inside the docker container_
+
+### Build and install python
 If running for the first time, run:
 
 ```bash
-python3 setup.py build
-python3 setup.py install
+python3 -B setup.py build
+python3 -B setup.py install
 ```
 
-Run:
-
 ```bash
-python3 object_detection/object_detection_runner.py
+python3 -B object_detection/object_detection_runner.py
 ```
 
 ## Based of
