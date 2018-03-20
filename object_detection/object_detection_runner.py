@@ -151,7 +151,7 @@ def object_detection(video_input,visualize,max_frames,width,height,fps_interval,
                     cv2.imshow('object_detection', image_np)
                     # print(boxes)
                     # print bounding corners of boxes when confidence is > minimum confidence (the ones you're drawing boxes around)
-                    print("NEW FRAME")
+                    # print("NEW FRAME")
                     for i, box in enumerate(np.squeeze(boxes)):
                         if(np.squeeze(scores)[i] > MINIMUM_CONFIDENCE):
                             # This uses actual coordinates based on size of image - remove height and width to use normalized coordinates
@@ -159,10 +159,17 @@ def object_detection(video_input,visualize,max_frames,width,height,fps_interval,
                             xmin = box[1]*width
                             ymax = box[2]*height
                             xmax = box[3]*width
+
+                            #normalized/percentage
+                            nymin = box[0]*100
+                            nxmin = box[1]*100
+                            nymax = box[2]*100
+                            nxmax = box[3]*100
+                            #TODO: should pass through image size at the very beginning
                             print ('Top left')
-                            print ("(" + str(xmin) + "," + str(ymin) + ")")
+                            print ("(" + str(nxmin) + "%," + str(nymin) + "%)")
                             print ('Bottom right')
-                            print ("(" + str(xmax) + "," + str(ymax) + ")")
+                            print ("(" + str(nxmax) + "%," + str(nymax) + "%)")
 
                     print()
                     # Exit Option--BROKEN
