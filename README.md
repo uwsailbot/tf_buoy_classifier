@@ -52,15 +52,8 @@ docker run -it --rm --privileged -p 8888:8888 --env DISPLAY=$DISPLAY -v /dev/vid
 >_The following must be run inside the docker container_
 
 ### Build and install python
-If running for the first time, run:
-
 ```bash
-python3 -B setup.py build
-python3 -B setup.py install
-```
-
-```bash
-python3 -B object_detection/object_detection_runner.py
+python3 build/lib/object_detection/object_detection_runner.py
 ```
 
 ## Based of
