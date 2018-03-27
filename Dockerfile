@@ -4,7 +4,7 @@ FROM tensorflow/tensorflow:1.4.0-py3
 RUN apt-get update
 
 ENV NUM_CORES 2
-ENV PYTHONPATH=${PYTHONPATH}":/home/TF:/home/TF/slim"
+ENV PYTHONPATH "${PYTHONPATH}:/home/TF:/home/TF/slim"
 
 RUN apt-get -y update -qq && \
     apt-get -y install wget \
